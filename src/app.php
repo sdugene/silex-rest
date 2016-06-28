@@ -8,8 +8,6 @@ use Silex\Provider\ServiceControllerServiceProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use App\ServicesLoader;
-use App\RoutesLoader;
 use Carbon\Carbon;
 
 date_default_timezone_set('Europe/London');
@@ -56,12 +54,15 @@ $app->register(new MonologServiceProvider(), array(
     "monolog.name" => "application"
 ));
 
+//load routes json
+$routes = json_decode(file_get_contents(ROOT . 'resources/routes/routes.json'), true);
+
 //load services
-$servicesLoader = new App\ServicesLoader($app);
+$servicesLoader = new App\ServicesLoader($app, $routes);
 $servicesLoader->bindServicesIntoContainer();
 
 //load routes
-$routesLoader = new App\RoutesLoader($app);
+$routesLoader = new App\RoutesLoader($app, $routes);
 $routesLoader->bindRoutesToControllers();
 
 $app->error(function (\Exception $e, $code) use ($app) {

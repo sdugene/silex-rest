@@ -1,15 +1,10 @@
-# Silex Simple REST
-[![Latest Stable Version](https://poser.pugx.org/vesparny/silex-simple-rest/v/stable.png)](https://packagist.org/packages/vesparny/silex-simple-rest) [![Total Downloads](https://poser.pugx.org/vesparny/silex-simple-rest/downloads.png)](https://packagist.org/packages/vesparny/silex-simple-rest) [![Build Status](https://secure.travis-ci.org/vesparny/silex-simple-rest.png)](http://travis-ci.org/vesparny/silex-simple-rest) [![Dependency Status](https://www.versioneye.com/user/projects/53d0e4eacca8fffeb200006d/badge.png)](https://www.versioneye.com/user/projects/53d0e4eacca8fffeb200006d)
-
-
-A simple silex skeleton application for writing RESTful API. Developed and maintained by [Alessandro Arnodo](http://alessandro.arnodo.net).
+# Silex REST
+A simple skeleton application for writing RESTful API.
 
 **This project wants to be a starting point to writing scalable and maintainable REST api with Silex PHP micro-framework**
 
-Continuous Integration is provided by [Travis-CI](http://travis-ci.org/).
-
 ####How do I run it?
-After download the last [release](https://github.com/vesparny/silex-simple-rest/releases), from the root folder of the project, run the following commands to install the php dependencies, import some data, and run a local php server.
+After download the last [release](https://github.com/vesparny/silex-rest/releases), from the root folder of the project, run the following commands to install the php dependencies, import some data, and run a local php server.
 
 You need at least php **5.4.*** with **SQLite extension** enabled and **Composer**
     

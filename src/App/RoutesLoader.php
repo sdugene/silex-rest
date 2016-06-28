@@ -7,29 +7,35 @@ use Silex\Application;
 class RoutesLoader
 {
     private $app;
+    public $routes;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, $routes)
     {
         $this->app = $app;
+        $this->routes = $routes;
         $this->instantiateControllers();
-
     }
 
     private function instantiateControllers()
     {
-        $this->app['notes.controller'] = $this->app->share(function () {
-            return new Controllers\NotesController($this->app['notes.service']);
-        });
+        foreach($this->routes as $route) {
+            $this->app[$route['tableName'].'.controller'] = $this->app->share(function () use ($route) {
+                return new Controllers\EntityController($this->app[$route['tableName'].'.service'], $route);
+            });
+        }
+
     }
 
     public function bindRoutesToControllers()
     {
         $api = $this->app["controllers_factory"];
 
-        $api->get('/notes', "notes.controller:getAll");
-        $api->post('/notes', "notes.controller:save");
-        $api->put('/notes/{id}', "notes.controller:update");
-        $api->delete('/notes/{id}', "notes.controller:delete");
+        foreach($this->routes as $route) {
+            $api->get('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['get']);
+            $api->post('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['post']);
+            $api->put('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['put']);
+            $api->delete('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['delete']);
+        }
 
         $this->app->mount($this->app["api.endpoint"].'/'.$this->app["api.version"], $api);
     }

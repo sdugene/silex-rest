@@ -7,17 +7,26 @@ use Silex\Application;
 class ServicesLoader
 {
     protected $app;
+    public $routes;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, $routes)
     {
         $this->app = $app;
+        $this->routes = $routes;
     }
 
     public function bindServicesIntoContainer()
     {
-        $this->app['notes.service'] = $this->app->share(function () {
-            return new Services\NotesService($this->app["db"]);
-        });
+        foreach($this->routes as $key => $route) {
+            $this->app[$route['tableName'].'.service'] = $this->app->share(function () use ($key, $route) {
+                $serviceName = 'App\\Services\\'.$key.'Service';
+                if (class_exists($serviceName)) {
+                    return new $serviceName($this->app["db"], $route);
+                } else {
+                    return new Services\EntityService($this->app["db"], $route);
+                }
+            });
+        }
     }
 }
 

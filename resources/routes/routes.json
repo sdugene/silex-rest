@@ -1,0 +1,20 @@
+{
+  "Notes" : {
+    "tableName" : "notes",
+    "methods" : {
+      "get" : "getAll",
+      "post" : "save",
+      "put" : "update",
+      "delete" : "delete"
+    }
+  },
+  "User" : {
+    "tableName" : "user",
+    "methods" : {
+      "get" : "getAll",
+      "post" : "save",
+      "put" : "update",
+      "delete" : "delete"
+    }
+  }
+}

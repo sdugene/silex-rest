@@ -1,8 +1,11 @@
 <?php
-require __DIR__ . '/prod.php';
-$app['debug'] = true;
-$app['log.level'] = Monolog\Logger::DEBUG;
-$app['db.options'] = array(
-  'driver' => 'pdo_sqlite',
-  'path' => realpath(ROOT_PATH . '/app.db'),
-);
+$app['log.level'] = Monolog\Logger::ERROR;
+$app['api.version'] = "v1";
+$app['api.endpoint'] = "/api";
+$app['db.options'] = [
+    "driver"   => "pdo_mysql",
+    "user"     => "root",
+    "password" => "root",
+    "dbname"   => "dev_db",
+    "host"     => "localhost"
+];

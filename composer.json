@@ -1,16 +1,20 @@
 {
-	"name": "vesparny/silex-simple-rest",
+	"name": "siteoffice/silex-rest",
 	"type": "library",
-	"description": "A simple silex skeleton for rest api",
-	"keywords": [
-		"framework", "silex", "rest", "api"
-	],
-	"homepage": "http://github.com/vesparny/silex-simple-rest",
+	"description": "A silex skeleton for rest api",
+	"keywords": ["framework", "silex", "rest", "api"],
 	"license": "MIT",
-	"authors": [{
-		"name": "Alessandro Arnodo",
-		"email": "alessandro@arnodo.net"
-	}],
+	"authors"     : [
+		{
+			"name"     : "SiteOffice",
+			"homepage" : "http://www.siteoffice-cms.fr",
+			"email"    : "webmaster@siteoffice.fr"
+		},
+		{
+			"name"     : "Alessandro Arnodo",
+			"email" : "alessandro@arnodo.net"
+		}
+	],
 	"require": {
 		"php": ">=5.3.0"
 	},
