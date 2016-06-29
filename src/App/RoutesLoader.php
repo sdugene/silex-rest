@@ -38,11 +38,11 @@ class RoutesLoader
                 $api->post('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['post']);
             }
 
-            if (array_key_exists('put', $route['methods']['post'])) {
+            if (array_key_exists('put', $route['methods']['put'])) {
                 $api->put('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['put']);
             }
 
-            if (array_key_exists('delete', $route['methods']['post'])) {
+            if (array_key_exists('delete', $route['methods']['delete'])) {
                 $api->delete('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['delete']);
             }
         }
