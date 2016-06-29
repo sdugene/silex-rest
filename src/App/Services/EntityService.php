@@ -13,6 +13,12 @@ class EntityService
         $this->route = $route;
     }
 
+    public function getById($id)
+    {
+        $sql = "SELECT * FROM ".$this->route['tableName']." WHERE id = ?";
+        return $this->db->fetchAssoc($sql, array((int) $id));
+    }
+
     public function getAll()
     {
         return $this->db->fetchAll("SELECT * FROM ".$this->route['tableName']);
@@ -20,13 +26,19 @@ class EntityService
 
     public function save($values)
     {
-        $this->db->insert($this->route['tableName'], $values);
-        return $this->db->lastInsertId();
+        if (!empty($values)) {
+            $this->db->insert($this->route['tableName'], $values);
+            return $this->db->lastInsertId();
+        }
     }
 
     public function update($id, $values)
     {
-        return $this->db->update($this->route['tableName'], ['name'=> 'test'], ['id' => $id]);
+        if (!empty($values)) {
+            return $this->db->update($this->route['tableName'], $values, ['id' => $id]);
+        } else {
+            return false;
+        }
     }
 
     public function delete($id)

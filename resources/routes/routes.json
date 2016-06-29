@@ -1,8 +1,10 @@
 {
   "Notes" : {
     "tableName" : "notes",
+    "attributes" : ["notes"],
     "methods" : {
-      "get" : "getAll",
+      "get" : "getById",
+      "getAll" : "getAll",
       "post" : "save",
       "put" : "update",
       "delete" : "delete"
@@ -10,8 +12,10 @@
   },
   "User" : {
     "tableName" : "user",
+    "attributes" : ["name", "age", "password"],
     "methods" : {
-      "get" : "getAll",
+      "get" : "getById",
+      "getAll" : "getAll",
       "post" : "save",
       "put" : "update",
       "delete" : "delete"

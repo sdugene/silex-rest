@@ -3,7 +3,6 @@
 namespace App\Controllers;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 
 class EntityController
@@ -18,6 +17,11 @@ class EntityController
         $this->route = $route;
     }
 
+    public function getById($id)
+    {
+        return new JsonResponse($this->service->getById($id));
+    }
+
     public function getAll()
     {
         return new JsonResponse($this->service->getAll());
@@ -25,17 +29,16 @@ class EntityController
 
     public function save(Request $request)
     {
-
         $values = $this->getDataFromRequest($request);
         return new JsonResponse(array("id" => $this->service->save($values)));
-
     }
 
     public function update($id, Request $request)
     {
         $values = $this->getDataFromRequest($request);
-        $this->service->update($id, $values);
-        return new JsonResponse($values);
+        $result = $this->service->update($id, $values);
+
+        return new JsonResponse($result);
 
     }
 
@@ -46,8 +49,12 @@ class EntityController
 
     public function getDataFromRequest(Request $request)
     {
-        return array(
-            $this->route['tableName'] => $request->request->get($this->route['tableName'])
-        );
+        $values = [];
+        foreach($request->request->all() as $key => $value) {
+            if(in_array($key, $this->route['attributes'])) {
+                $values[$key] = $value;
+            }
+        }
+        return $values;
     }
 }

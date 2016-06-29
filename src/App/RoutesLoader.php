@@ -31,10 +31,20 @@ class RoutesLoader
         $api = $this->app["controllers_factory"];
 
         foreach($this->routes as $route) {
-            $api->get('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['get']);
-            $api->post('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['post']);
-            $api->put('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['put']);
-            $api->delete('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['delete']);
+            $api->get('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['getAll']);
+            $api->get('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['get']);
+
+            if (array_key_exists('post', $route['methods']['post'])) {
+                $api->post('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['post']);
+            }
+
+            if (array_key_exists('put', $route['methods']['post'])) {
+                $api->put('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['put']);
+            }
+
+            if (array_key_exists('delete', $route['methods']['post'])) {
+                $api->delete('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['delete']);
+            }
         }
 
         $this->app->mount($this->app["api.endpoint"].'/'.$this->app["api.version"], $api);
