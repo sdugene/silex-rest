@@ -29,21 +29,25 @@ class RoutesLoader
     public function bindRoutesToControllers()
     {
         $api = $this->app["controllers_factory"];
+        $pattern = '/'.$this->app["api.version"].'\/([^\/]*)(?:[\/\d]+)?$/';
+        preg_match($pattern, $_SERVER['REQUEST_URI'], $matches);
 
         foreach($this->routes as $route) {
-            $api->get('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['getAll']);
-            $api->get('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['get']);
+            if (in_array($route['tableName'], $matches)){
+                $api->get('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['getAll']);
+                $api->get('/' . $route['tableName'] . '/{id}', $route['tableName'] . '.controller:' . $route['methods']['get']);
 
-            if (array_key_exists('post', $route['methods']['post'])) {
-                $api->post('/'.$route['tableName'], $route['tableName'].'.controller:'.$route['methods']['post']);
-            }
+                if (array_key_exists('post', $route['methods'])) {
+                    $api->post('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['post']);
+                }
 
-            if (array_key_exists('put', $route['methods']['put'])) {
-                $api->put('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['put']);
-            }
+                if (array_key_exists('put', $route['methods'])) {
+                    $api->put('/' . $route['tableName'] . '/{id}', $route['tableName'] . '.controller:' . $route['methods']['put']);
+                }
 
-            if (array_key_exists('delete', $route['methods']['delete'])) {
-                $api->delete('/'.$route['tableName'].'/{id}', $route['tableName'].'.controller:'.$route['methods']['delete']);
+                if (array_key_exists('delete', $route['methods'])) {
+                    $api->delete('/' . $route['tableName'] . '/{id}', $route['tableName'] . '.controller:' . $route['methods']['delete']);
+                }
             }
         }
 
