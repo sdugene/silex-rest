@@ -7,14 +7,17 @@ if (count($argv) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get'
         'ip' => '',
         'methods' => []
     ];
+
+    var_dump($argv[1]);
+
     if (validateIp($argv[1])) {
         $value['ip'] = $argv[1];
     } elseif ($argv[1] == 'all') {
         $value['methods'] = ['get', 'post', 'put', 'delete'];
     }
 
-    foreach ($argv as $key => $value) {
-        if ($key > 1 && !in_array($value, $value['methods'] && in_array($value, ['get', 'post', 'put', 'delete']))) {
+    foreach ($argv as $cursor => $value) {
+        if ($cursor > 1 && !in_array($value, $value['methods'] && in_array($value, ['get', 'post', 'put', 'delete']))) {
             $value['methods'][] = $value;
         }
     }
