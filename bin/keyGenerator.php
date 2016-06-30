@@ -21,7 +21,10 @@ if (count($argv) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get'
 
 
 
-    if (!empty($value['methods']) && file_put_contents(ROOT . 'storage/keys/'.$key.'.key', json_encode($value))) {
+    if (empty($value['methods'])) {
+        echo 'Creation ERROR : no methods defined
+';
+    } elseif (file_put_contents(ROOT . 'storage/keys/'.$key.'.key', json_encode($value))) {
         echo 'Key creation done.
 your key : '.$key.'
 ';
