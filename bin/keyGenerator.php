@@ -15,7 +15,7 @@ if (count($argv) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get'
     }
 
     foreach ($argv as $line => $method) {
-        if ($line > 1 && !in_array($method, $value['methods']) && in_array($method, ['get', 'post', 'put', 'delete'])) {
+        if ($line > 1 && !in_array($method, $value['methods']) && in_array($method, ['all', 'get', 'post', 'put', 'delete'])) {
             if ($method == 'all') {
                 $value['methods'] = ['get', 'post', 'put', 'delete'];
             } else {
