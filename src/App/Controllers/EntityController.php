@@ -33,6 +33,12 @@ class EntityController
         return new JsonResponse(array("id" => $this->service->save($values)));
     }
 
+    public function search(Request $request)
+    {
+        $criteria = $this->getDataFromRequest($request, true);
+        return new JsonResponse($this->service->search($criteria));
+    }
+
     public function update($id, Request $request)
     {
         $values = $this->getDataFromRequest($request);
@@ -47,11 +53,11 @@ class EntityController
         return new JsonResponse($this->service->delete($id));
     }
 
-    public function getDataFromRequest(Request $request)
+    public function getDataFromRequest(Request $request, $addId = false)
     {
         $values = [];
         foreach($request->request->all() as $key => $value) {
-            if(in_array($key, $this->route['attributes'])) {
+            if((in_array($key, $this->route['attributes'])) || ($addId && $key == 'id')) {
                 $values[$key] = $value;
             }
         }

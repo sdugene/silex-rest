@@ -29,7 +29,7 @@ class RoutesLoader
     public function bindRoutesToControllers()
     {
         $api = $this->app["controllers_factory"];
-        $pattern = '/'.$this->app["api.version"].'\/([^\/]*)(?:[\/\d]+)?$/';
+        $pattern = '/'.$this->app["api.version"].'\/([^\/]*)(?:([\/\d]+)|(\/search))?$/';
         preg_match($pattern, $_SERVER['REQUEST_URI'], $matches);
 
         if (empty($this->app['authorized.methods'])) {
@@ -40,6 +40,7 @@ class RoutesLoader
             if (in_array($route['tableName'], $matches)){
                 $api->get('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['getAll']);
                 $api->get('/' . $route['tableName'] . '/{id}', $route['tableName'] . '.controller:' . $route['methods']['get']);
+                $api->post('/' . $route['tableName'] . '/search', $route['tableName'] . '.controller:' . $route['methods']['search']);
 
                 if (array_key_exists('post', $route['methods']) && in_array('post', $this->app['authorized.methods'])) {
                     $api->post('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['post']);

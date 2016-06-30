@@ -43,7 +43,8 @@ foreach ($tables as $table) {
             'attributes' => explode(',',$table['columns']),
             'methods' => [
                 "get" => "getById",
-                "getAll" => "getAll"
+                "getAll" => "getAll",
+                "search" => "search"
             ]
         ];
 

@@ -37,6 +37,7 @@ The api will respond to
 
 	GET    ->   http://localhost/api/v1/myTable
 	GET    ->   http://localhost/api/v1/myTable/{id}
+	POST   ->   http://localhost/api/v1/myTable/search
 	POST   ->   http://localhost/api/v1/myTable
 	PUT    ->   http://localhost/api/v1/myTable/{id}
 	DELETE ->   http://localhost/api/v1/myTable/{id}
@@ -49,6 +50,9 @@ Try with curl:
 	#GET
 	curl http://localhost/api/v1/myTable -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 	curl http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
+
+	#POST (search)
+	curl -X POST http://localhost/api/v1/myTable/search -d '{"note":"Hello World!"}' -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 	#POST (insert)
 	curl -X POST http://localhost/api/v1/myTable -d '{"note":"Hello World!"}' -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"

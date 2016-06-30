@@ -31,6 +31,14 @@ class EntityService
             return $this->db->lastInsertId();
         }
     }
+    
+    public function search($criteria)
+    {
+        if (!empty($criteria)) {
+            $sql = "SELECT * FROM ".$this->route['tableName']." WHERE ".$this->prepareSql($criteria);
+            return $this->db->fetchAll($sql, array_values($criteria));
+        }
+    }
 
     public function update($id, $values)
     {
@@ -44,5 +52,14 @@ class EntityService
     public function delete($id)
     {
         return $this->db->delete($this->route['tableName'], array("id" => $id));
+    }
+
+    private function prepareSql($criteria)
+    {
+        $keys = array_keys($criteria);
+        foreach($keys as &$key) {
+            $key .= ' = ?';
+        }
+        return implode(' AND ',$keys);
     }
 }
