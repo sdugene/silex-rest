@@ -1,5 +1,4 @@
-#because i run on http://localhost/silex-angularjs/web/
-RewriteBase /silex-angularjs/web/
+RewriteBase /web/
 RewriteEngine on
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -11,5 +10,3 @@ RewriteRule ^(.*) index.html [NC,L]
 
 #let the php framework do the rest
 RewriteRule ^(api/.*) api/index.php [NC,L]
-
-#TODO manage every single route and return 404 for the others (for SEO purpose)
