@@ -24,6 +24,8 @@ if (count($argv) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get'
         echo 'Creation ERROR : no methods defined
 ';
     } elseif (file_put_contents(ROOT . 'storage/keys/'.$key.'.key', json_encode($value))) {
+        chown(ROOT . 'storage/keys/'.$key.'.key', 'www-data');
+        chgrp(ROOT . 'storage/keys/'.$key.'.key', 'www-data');
         echo 'Key creation done.
 your key : '.$key.'
 ';
