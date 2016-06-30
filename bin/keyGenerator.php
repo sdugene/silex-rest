@@ -39,7 +39,7 @@ your key : '.$key.'
     }
 
 } else {
-    echo 'please add params :
+    echo 'please chose params :
     keyGenerator all
     keyGenerator get
     keyGenerator get post
