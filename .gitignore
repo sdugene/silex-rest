@@ -2,5 +2,6 @@ vendor
 .idea
 /resources/config/config.php
 /resources/routes/*.json
+/resources/keys/*.key
 /composer.lock
 /resources/routes/routes.json

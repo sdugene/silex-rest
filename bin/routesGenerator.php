@@ -62,9 +62,12 @@ foreach ($tables as $table) {
 }
 
 if (!empty($routes) && file_put_contents(ROOT . 'resources/routes/routes.json', json_encode($routes))) {
-    echo 'Routes Creation done';
+    echo 'Routes creation done
+';
 } elseif (!empty($routes)) {
-    echo 'Creation ERROR : no route found';
+    echo 'Creation ERROR : no route found
+ ';
 } else {
-    echo 'Creation ERROR : I can\'t write '.ROOT . 'resources/routes/routes.json';
+    echo 'Creation ERROR : I can\'t write '.ROOT . 'resources/routes/routes.json
+ ';
 }

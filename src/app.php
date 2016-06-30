@@ -52,6 +52,9 @@ $app->register(new MonologServiceProvider(), array(
     "monolog.name" => "application"
 ));
 
+//load security keys
+$securityKeysLoader = new App\SecurityKeysLoader($app);
+
 //load routes json
 $routes = json_decode(file_get_contents(ROOT . 'resources/routes/routes.json'), true);
 
