@@ -4,16 +4,22 @@ A simple skeleton application for writing RESTful API.
 **This project wants to be a starting point to writing scalable and maintainable REST api with Silex PHP micro-framework**
 
 ####How do I run it?
-After download the last [release](https://github.com/vesparny/silex-rest/releases), from the root folder of the project, run the following commands to install the php dependencies, import some data, and run a local php server.
+After cloning project, from the root folder of the project, run the following command to install the php dependencies.
 
     
     composer install 
     
 
-Set your database then copy resources/config/dev.php to resouces/config/config.php, update with your database params then run.
+Set your database then copy resources/config/prod.php to resouces/config/config.php, update with your database params then run.
 
    	
     php bin/routesGenerator.php 
+   
+
+In production environment, authentification key is required, to generate it run the following command. 
+
+   	
+    php bin/keyGenerator.php all
    
 
 Your api is now available at http://localhost/api/v1.
@@ -35,27 +41,23 @@ The api will respond to
 	PUT    ->   http://localhost/api/v1/myTable/{id}
 	DELETE ->   http://localhost/api/v1/myTable/{id}
 
-Your request should have 'Content-Type: application/json' header.
+Your request should have 'Content-Type: application/json' and 'key: myKey' headers.
 Your api is CORS compliant out of the box, so it's capable of cross-domain communication.
 
 Try with curl:
 	
 	#GET
-	curl http://localhost/api/v1/myTable -H 'Content-Type: application/json' -w "\n"
-	curl http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -w "\n"
+	curl http://localhost/api/v1/myTable -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
+	curl http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 	#POST (insert)
-	curl -X POST http://localhost/api/v1/myTable -d '{"note":"Hello World!"}' -H 'Content-Type: application/json' -w "\n"
+	curl -X POST http://localhost/api/v1/myTable -d '{"note":"Hello World!"}' -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 	#PUT (update)
-	curl -X PUT http://localhost/api/v1/myTable/1 -d '{"note":"Uhauuuuuuu!"}' -H 'Content-Type: application/json' -w "\n"
+	curl -X PUT http://localhost/api/v1/myTable/1 -d '{"note":"Uhauuuuuuu!"}' -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 	#DELETE
-	curl -X DELETE http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -w "\n"
-
-####What's under the hood
-Take a look at the source code, it's self explanatory :)
-More documentation and info about the code will be available soon.
+	curl -X DELETE http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 Under the resources folder you can find a .htaccess file to put the api in production.
 
