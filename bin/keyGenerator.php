@@ -1,7 +1,7 @@
 <?php
 define("ROOT", __DIR__ . '/../');
 
-if (count($args) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get', 'post', 'put', 'delete'])) {
+if (count($argv) > 1 && validateIp($argv[1]) || in_array($argv[1], ['all', 'get', 'post', 'put', 'delete'])) {
     $key = hash('sha256', uniqid (time(), true));
     $value = [
         'ip' => '',
