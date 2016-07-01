@@ -36,7 +36,7 @@ $sql = "
   ) as id ON id.table_name = isc.table_name
   WHERE
     isc.table_schema = DATABASE()
-    AND isc.column_name != id.id
+    AND (isc.column_name != id.id OR id.id is NULL)
   GROUP BY isc.table_name
   ORDER BY isc.table_name;
 ";
