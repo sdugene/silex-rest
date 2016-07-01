@@ -29,15 +29,17 @@ class RoutesLoader
     public function bindRoutesToControllers()
     {
         $api = $this->app['controllers_factory'];
-        $pattern = '/'.$this->app['api.version'].'\/([^\/]*)(?:(?:[\/\d]+)|(?:\/search)|(?:(?:(?:[\/\d]+)|(?:\/search)\/)?([^\/]*)))?$/';
+        $pattern = '/'.$this->app['api.version'].'\/([^\/]*)(?:(?:[\/\d]+)|(?:\/search)|(?:(?:(?:[\/\d]+)|(?:\/search)\/)?([^\/]*)))?(?:\/([^\/]*))?$/';
         preg_match($pattern, $_SERVER['REQUEST_URI'], $matches);
 
         if (empty($this->app['authorized.methods'])) {
             return false;
         }
+        
+        $api->get('/doc/routes', 'doc.controller:routes');
 
         foreach($this->app['routes.list'] as $route) {
-            if ($route['tableName'] == $matches[1]){
+            if (!empty($matches) && $route['tableName'] == $matches[1]){
                 $api->get('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['getAll']);
                 $api->get('/' . $route['tableName'] . '/{id}', $route['tableName'] . '.controller:' . $route['methods']['get'])
                     ->assert('id', '\d+');
@@ -63,8 +65,11 @@ class RoutesLoader
                 }
                 break;
             }
+
+            if (!empty($matches) && array_key_exists(3, $matches) && $route['tableName'] == $matches[3]) {
+                $api->get('/doc/routes/{route}', 'doc.controller:route');
+            }
         }
-        $api->get('/doc/routes', 'doc.controller:routes');
 
         $this->app->mount($this->app['api.endpoint'].'/'.$this->app['api.version'], $api);
     }
