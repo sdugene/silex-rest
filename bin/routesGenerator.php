@@ -15,17 +15,30 @@ $user_priv = $app["db"]->fetchAssoc($sql_priv);
 
 $id = 1;
 $sql = "
-  SELECT 
-    table_name,
-    GROUP_CONCAT(column_name SEPARATOR ',') as columns,
-    privileges,
-    column_comment
-  FROM information_schema.columns
+  SELECT
+    isc.table_name,
+    GROUP_CONCAT(isc.column_name SEPARATOR ',') as columns,
+    id.id,
+    isc.privileges,
+    isc.column_comment,
+    fk.foreign_keys
+  FROM information_schema.columns isc
+  LEFT JOIN (
+      SELECT i.TABLE_NAME as table_name, CONCAT('{\"',GROUP_CONCAT(CONCAT(k.REFERENCED_TABLE_NAME,'\":\"',k.REFERENCED_COLUMN_NAME) SEPARATOR '\",\"'),'\"}') as foreign_keys
+    FROM information_schema.TABLE_CONSTRAINTS i
+    LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+    WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' AND i.table_schema = DATABASE() GROUP BY table_name ORDER BY i.table_name
+  ) as fk ON fk.table_name = isc.table_name
+  LEFT JOIN (
+      SELECT column_name as id, table_name
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND extra = 'auto_increment'
+  ) as id ON id.table_name = isc.table_name
   WHERE
-    table_schema = DATABASE()
-    AND column_name != 'id'
-  GROUP BY table_name
-  ORDER BY table_name
+    isc.table_schema = DATABASE()
+    AND isc.column_name != id.id
+  GROUP BY isc.table_name
+  ORDER BY isc.table_name;
 ";
 $tables = $app["db"]->fetchAll($sql);
 
@@ -38,13 +51,23 @@ foreach ($tables as $table) {
         $key = preg_replace('/[\s]*/', '', ucwords($nameTemp));
         $routes[$key] = [
             'tableName' => $table['table_name'],
+            'idColumn' => $table['id'],
             'attributes' => explode(',',$table['columns']),
+            'foreignKeys' => [],
             'methods' => [
                 "get" => "getById",
                 "getAll" => "getAll",
                 "search" => "search"
             ]
         ];
+
+        if (!is_null($table['foreign_keys'])) {
+            $routes[$key]['foreignKeys'] = json_decode($table['foreign_keys'], true);
+        }
+
+        echo '<pre>';
+        var_dump($routes);
+        echo '</pre>';
 
         if ($user_priv['Insert_priv'] == 'Y') {
             $routes[$key]['methods']['post'] = 'save';
