@@ -7,12 +7,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EntityController
 {
-
+    private $app;
     protected $service;
     protected $route;
 
-    public function __construct($service, $route)
+    public function __construct($app, $service, $route)
     {
+        $this->app = $app;
         $this->service = $service;
         $this->route = $route;
     }
@@ -22,9 +23,19 @@ class EntityController
         return new JsonResponse($this->service->getById($id));
     }
 
+    public function getByIdWithJoin($id, $join)
+    {
+        return new JsonResponse($this->service->getByIdWithJoin($id, $join));
+    }
+
     public function getAll()
     {
         return new JsonResponse($this->service->getAll());
+    }
+
+    public function getAllWithJoin($join)
+    {
+        return new JsonResponse($this->service->getAllWithJoin($join));
     }
 
     public function save(Request $request)
@@ -37,6 +48,12 @@ class EntityController
     {
         $criteria = $this->getDataFromRequest($request, true);
         return new JsonResponse($this->service->search($criteria));
+    }
+
+    public function searchWithJoin(Request $request, $join)
+    {
+        $criteria = $this->getDataFromRequest($request, true);
+        return new JsonResponse($this->service->searchWithJoin($criteria, $join));
     }
 
     public function update($id, Request $request)

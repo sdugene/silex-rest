@@ -24,7 +24,7 @@ $sql = "
     fk.foreign_keys
   FROM information_schema.columns isc
   LEFT JOIN (
-      SELECT i.TABLE_NAME as table_name, CONCAT('{\"',GROUP_CONCAT(CONCAT(k.REFERENCED_TABLE_NAME,'\":\"',k.REFERENCED_COLUMN_NAME) SEPARATOR '\",\"'),'\"}') as foreign_keys
+      SELECT i.TABLE_NAME as table_name, CONCAT('{\"',GROUP_CONCAT(CONCAT(k.REFERENCED_TABLE_NAME,'\":{\"column\":\"',k.COLUMN_NAME,'\",\"referenced\":\"',k.REFERENCED_COLUMN_NAME,'\"}') SEPARATOR ',\"'),'}') as foreign_keys
     FROM information_schema.TABLE_CONSTRAINTS i
     LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME
     WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' AND i.table_schema = DATABASE() GROUP BY table_name ORDER BY i.table_name
@@ -41,7 +41,6 @@ $sql = "
   ORDER BY isc.table_name;
 ";
 $tables = $app["db"]->fetchAll($sql);
-
 $routes = [];
 foreach ($tables as $table) {
     $privileges = explode(',', $table['privileges']);
@@ -57,17 +56,16 @@ foreach ($tables as $table) {
             'methods' => [
                 "get" => "getById",
                 "getAll" => "getAll",
-                "search" => "search"
+                "search" => "search",
+                "getWithJoin" => "getByIdWithJoin",
+                "getAllWithJoin" => "getAllWithJoin",
+                "searchWithJoin" => "searchWithJoin"
             ]
         ];
 
         if (!is_null($table['foreign_keys'])) {
             $routes[$key]['foreignKeys'] = json_decode($table['foreign_keys'], true);
         }
-
-        echo '<pre>';
-        var_dump($routes);
-        echo '</pre>';
 
         if ($user_priv['Insert_priv'] == 'Y') {
             $routes[$key]['methods']['post'] = 'save';
