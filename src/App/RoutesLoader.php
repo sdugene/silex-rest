@@ -21,7 +21,9 @@ class RoutesLoader
                 return new Controllers\EntityController($this->app, $this->app[$route['tableName'].'.service'], $route);
             });
         }
-
+        $this->app['doc.controller'] = $this->app->share(function () {
+            return new Controllers\DocController($this->app);
+        });
     }
 
     public function bindRoutesToControllers()
@@ -62,6 +64,7 @@ class RoutesLoader
                 break;
             }
         }
+        $api->get('/doc/routes', 'doc.controller:routes');
 
         $this->app->mount($this->app['api.endpoint'].'/'.$this->app['api.version'], $api);
     }
