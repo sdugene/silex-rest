@@ -45,7 +45,7 @@ class SecurityKeysLoader
 
     private function getHeader($name = 'key')
     {
-        return $_SERVER['HTTP_'.strtoupper($name)];
+        return array_key_exists('HTTP_'.strtoupper($name), $_SERVER) ? $_SERVER['HTTP_'.strtoupper($name)] : false;
     }
 
     private function getClientIp()
