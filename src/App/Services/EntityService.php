@@ -24,7 +24,7 @@ class EntityService
 
     public function getByIdWithJoin($id, $join = null)
     {
-        $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->route['idColumn']." = ?";
+        $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->route['tableName'].".".$this->route['idColumn']." = ?";
         return $this->fetchJoined($this->db->fetchAll($sql, array((int) $id)), $join);
     }
 
@@ -148,6 +148,29 @@ class EntityService
                 }
             }
             $array[$join] = $joinArray;
+        }
+        return $this->mergeResults($array, $join);
+    }
+
+    private function mergeResults($array, $join = null)
+    {
+        if (is_numeric(key($array))) {
+            $resultsList = [];
+            $resultsIds = [];
+            $pos = 0;
+            foreach($array as $result) {
+                if (!in_array($result[$this->route['idColumn']], array_keys($resultsIds))) {
+                    $resultsIds[$result[$this->route['idColumn']]] = $pos;
+                    $resultsList[$pos] = $result;
+                    $pos++;
+                } else {
+                    $newpos = $resultsIds[$result[$this->route['idColumn']]];
+                    $resultsList[$newpos][$join][key($result[$join])] = $result[$join][key($result[$join])];
+                }
+            }
+            if (!empty($resultsList)) {
+                return $resultsList;
+            }
         }
         return $array;
     }

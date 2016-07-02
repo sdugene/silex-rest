@@ -13,6 +13,8 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 $sql_priv = "select Select_priv, Insert_priv, Update_priv, Delete_priv from mysql.user WHERE user = '".$app['db.options']['user']."'";
 $user_priv = $app["db"]->fetchAssoc($sql_priv);
 
+$app["db"]->query("SET @@group_concat_max_len = 15360;");
+
 $id = 1;
 $sql = "
   SELECT
@@ -21,7 +23,8 @@ $sql = "
     id.id,
     isc.privileges,
     isc.column_comment,
-    fk.foreign_keys
+    fk.foreign_keys,
+    fki.foreign_keys as foreign_keys_inverted
   FROM information_schema.columns isc
   LEFT JOIN (
       SELECT i.TABLE_NAME as table_name, CONCAT('{\"',GROUP_CONCAT(CONCAT(k.REFERENCED_TABLE_NAME,'\":{\"column\":\"',k.COLUMN_NAME,'\",\"referenced\":\"',k.REFERENCED_COLUMN_NAME,'\"}') SEPARATOR ',\"'),'}') as foreign_keys
@@ -29,6 +32,12 @@ $sql = "
     LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME
     WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' AND i.table_schema = DATABASE() GROUP BY table_name ORDER BY i.table_name
   ) as fk ON fk.table_name = isc.table_name
+  LEFT JOIN (
+      SELECT k.REFERENCED_TABLE_NAME as table_name, CONCAT('{\"',GROUP_CONCAT(CONCAT(i.TABLE_NAME,'\":{\"column\":\"',k.REFERENCED_COLUMN_NAME,'\",\"referenced\":\"',k.COLUMN_NAME,'\"}') SEPARATOR ',\"'),'}') as foreign_keys
+    FROM information_schema.TABLE_CONSTRAINTS i
+    LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+    WHERE i.CONSTRAINT_TYPE = 'FOREIGN KEY' AND i.table_schema = DATABASE() GROUP BY table_name ORDER BY i.table_name
+  ) as fki ON fki.table_name = isc.table_name
   LEFT JOIN (
       SELECT column_name as id, table_name
     FROM information_schema.columns
@@ -62,9 +71,12 @@ foreach ($tables as $table) {
                 "searchWithJoin" => "searchWithJoin"
             ]
         ];
-
         if (!is_null($table['foreign_keys'])) {
             $routes[$key]['foreignKeys'] = json_decode($table['foreign_keys'], true);
+        }
+
+        if (!is_null($table['foreign_keys_inverted'])) {
+            $routes[$key]['foreignKeys'] = array_merge($routes[$key]['foreignKeys'], json_decode($table['foreign_keys_inverted'], true));
         }
 
         if ($user_priv['Insert_priv'] == 'Y') {

@@ -29,7 +29,7 @@ class RoutesLoader
     public function bindRoutesToControllers()
     {
         $api = $this->app['controllers_factory'];
-        $pattern = '/'.$this->app['api.version'].'\/([^\/]*)(?:(?:[\/\d]+)|(?:\/search)|(?:(?:(?:[\/\d]+)|(?:\/search)\/)?([^\/]*)))?(?:\/([^\/]*))?$/';
+        $pattern = '/'.$this->app['api.version'].'\/([^\/]+)(?:\/[\d]+|\/search|\/route[s]?)?(?:\/([^\/]+))?$/';
         preg_match($pattern, $_SERVER['REQUEST_URI'], $matches);
 
         if (empty($this->app['authorized.methods'])) {
@@ -37,7 +37,6 @@ class RoutesLoader
         }
         
         $api->get('/doc/routes', 'doc.controller:routes');
-
         foreach($this->app['routes.list'] as $route) {
             if (!empty($matches) && $route['tableName'] == $matches[1]){
                 $api->get('/' . $route['tableName'], $route['tableName'] . '.controller:' . $route['methods']['getAll']);
@@ -45,7 +44,9 @@ class RoutesLoader
                     ->assert('id', '\d+');
                 $api->post('/' . $route['tableName'] . '/search', $route['tableName'] . '.controller:' . $route['methods']['search']);
 
-                if(array_key_exists(2, $matches) && array_key_exists($matches[2], $route['foreignKeys'])) {
+                if(array_key_exists(2, $matches) &&
+                    !empty($route['foreignKeys']) &&
+                    array_key_exists($matches[2], $route['foreignKeys'])) {
                     $api->get('/' . $route['tableName'] . '/{join}', $route['tableName'] . '.controller:' . $route['methods']['getAllWithJoin']);
                     $api->get('/' . $route['tableName'] . '/{id}' . '/{join}', $route['tableName'] . '.controller:' . $route['methods']['getWithJoin'])
                         ->assert('id', '\d+');
