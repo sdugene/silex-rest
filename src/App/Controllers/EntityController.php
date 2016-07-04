@@ -74,7 +74,7 @@ class EntityController
     {
         $values = [];
         foreach($request->request->all() as $key => $value) {
-            if((in_array($key, $this->route['attributes'])) || ($addId && $key == 'id')) {
+            if((in_array($key, $this->route['attributes'])) || ($addId && $key == $this->route['idColumn'])) {
                 $values[$key] = $value;
             }
         }

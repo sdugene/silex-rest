@@ -81,7 +81,7 @@ class EntityService
     {
         $keys = array_keys($criteria);
         foreach($keys as &$key) {
-            $key .= ' = ?';
+            $key = $this->route['tableName'] . '.' . $key . ' = ?';
         }
         return implode(' AND ',$keys);
     }
