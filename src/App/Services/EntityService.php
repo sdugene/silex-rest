@@ -51,7 +51,7 @@ class EntityService
     {
         if (!empty($criteria)) {
             $sql = "SELECT * FROM ".$this->route['tableName']." WHERE ".$this->prepareSql($criteria);
-            return $this->db->fetchAll($sql, array_values($criteria));
+            return $this->db->fetchAll($sql, $this->array_values_recursive($criteria));
         }
     }
 
@@ -59,7 +59,7 @@ class EntityService
     {
         if (!empty($criteria)) {
             $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->prepareSql($criteria);
-            return $this->fetchJoined($this->db->fetchAll($sql, array_values($criteria)), $join);
+            return $this->fetchJoined($this->db->fetchAll($sql, array_values_recursive($criteria)), $join);
         }
     }
 
@@ -81,7 +81,11 @@ class EntityService
     {
         $keys = array_keys($criteria);
         foreach($keys as &$key) {
-            $key = $this->route['tableName'] . '.' . $key . ' = ?';
+            if (is_array($criteria[$key])) {
+                $key = $this->route['tableName'] . '.' . key($criteria[$key]). ' ' . $key . ' ?';
+            } else {
+                $key = $this->route['tableName'] . '.' . $key . ' = ?';
+            }
         }
         return implode(' AND ',$keys);
     }
@@ -150,6 +154,20 @@ class EntityService
             $array[$join] = $joinArray;
         }
         return $this->mergeResults($array, $join);
+    }
+
+    private function array_values_recursive($array, $arrayNew = [])
+    {
+        foreach ($array as $value)
+        {
+            if (is_array($value))
+            {
+                $arrayNew = $this->array_values_recursive($value, $arrayNew);
+            } else {
+                $arrayNew[] = $value;
+            }
+        }
+        return $arrayNew;
     }
 
     private function mergeResults($array, $join = null)

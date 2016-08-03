@@ -72,8 +72,16 @@ class EntityController
 
     public function getDataFromRequest(Request $request, $addId = false)
     {
+        return $this->getDataFromArray($request->request->all(), $addId);
+    }
+
+    private function getDataFromArray($array, $addId = false)
+    {
         $values = [];
-        foreach($request->request->all() as $key => $value) {
+        foreach($array as $key => $value) {
+            if (is_array($value)) {
+                $values[$key] = $this->getDataFromArray($value, $addId);
+            }
             if((in_array($key, $this->route['attributes'])) || ($addId && $key == $this->route['idColumn'])) {
                 $values[$key] = $value;
             }
