@@ -52,8 +52,11 @@ class EntityService
         if (!empty($criteria)) {
             $sql = "SELECT * FROM ".$this->route['tableName']." WHERE ".$this->prepareSql($criteria).
                 $this->group($group).$this->order($order).$this->limit($maxLine);
-            return $this->db->fetchAll($sql, $this->array_values_recursive($criteria));
+        } else {
+            $sql = "SELECT * FROM ".$this->route['tableName'].
+                $this->group($group).$this->order($order).$this->limit($maxLine);
         }
+        return $this->db->fetchAll($sql, $this->array_values_recursive($criteria));
     }
 
     public function searchWithJoin($criteria, $join = null, $maxLine = false, $order = false, $group = false)
