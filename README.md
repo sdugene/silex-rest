@@ -1,8 +1,6 @@
 # Silex REST
 A simple skeleton application for writing RESTful API.
 
-**This project wants to be a starting point to writing scalable and maintainable REST api with Silex PHP micro-framework**
-
 ####How do I run it?
 After cloning project, from the root folder of the project, run the following command to install the php dependencies.
 
@@ -64,20 +62,6 @@ Try with curl:
 	curl -X DELETE http://localhost/api/v1/myTable/1 -H 'Content-Type: application/json' -H 'key: myKey' -w "\n"
 
 Under the resources folder you can find a .htaccess file to put the api in production.
-
-####Contributing
-
-Fell free to contribute, fork, pull request, hack. Thanks!
-
-####Author
-
-+	[http://www.siteoffice-cms.fr](http://www.siteoffice-cms.fr)
-
-+	<mailto:sebastien@siteoffice.fr>
-
-## License
-
-see LICENSE file.
 
 
 
