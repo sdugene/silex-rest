@@ -71,7 +71,7 @@ class EntityService
     public function update($id, $values)
     {
         if (!empty($values)) {
-            return $this->db->update($this->route['tableName'], $values, ['id' => $id]);
+            return $this->db->update($this->route['tableName'], $values, [$this->route['idColumn'] => $id]);
         } else {
             return false;
         }
@@ -79,7 +79,7 @@ class EntityService
 
     public function delete($id)
     {
-        return $this->db->delete($this->route['tableName'], array("id" => $id));
+        return $this->db->delete($this->route['tableName'], array($this->route['idColumn'] => $id));
     }
 
     protected function prepareSql($criteria)
