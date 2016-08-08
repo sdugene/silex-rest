@@ -84,7 +84,7 @@ class EntityService
         $keys = array_keys($criteria);
         foreach($keys as &$key) {
             if (is_array($criteria[$key])) {
-                $key = '`'.$this->route['tableName'].'`' . '.' . key($criteria[$key]). ' ' . '`'.$key.'`' . ' ?';
+                $key = '`'.$this->route['tableName'].'`' . '.' . '`'.key($criteria[$key]).'`'. ' ' . $key . ' ?';
             } else {
                 $key = '`'.$this->route['tableName'].'`' . '.' . '`'.$key.'`' . ' = ?';
             }
