@@ -44,16 +44,30 @@ class EntityController
         return new JsonResponse(array("id" => $this->service->save($values)));
     }
 
-    public function search(Request $request)
+    public function search(Request $request, $maxLine = false, $order = false, $group = false)
     {
-        $criteria = $this->getDataFromRequest($request, true);
-        return new JsonResponse($this->service->search($criteria));
+        if (!is_null($request->get('criteria'))) {
+            $criteria = $this->getDataFromArray($request->get('criteria'), true);
+            $maxLine = $request->get('maxLine');
+            $order = $request->get('order');
+            $group = $request->get('group');
+        } else {
+            $criteria = $this->getDataFromRequest($request, true);
+        }
+        return new JsonResponse($this->service->search($criteria, $maxLine, $order, $group));
     }
 
     public function searchWithJoin(Request $request, $join)
     {
-        $criteria = $this->getDataFromRequest($request, true);
-        return new JsonResponse($this->service->searchWithJoin($criteria, $join));
+        if (!is_null($request->get('criteria'))) {
+            $criteria = $this->getDataFromArray($request->get('criteria'), true);
+            $maxLine = $request->get('maxLine');
+            $order = $request->get('order');
+            $group = $request->get('criteria');
+        } else {
+            $criteria = $this->getDataFromRequest($request, true);
+        }
+        return new JsonResponse($this->service->searchWithJoin($criteria, $join, $maxLine, $order, $group));
     }
 
     public function update($id, Request $request)
@@ -70,7 +84,7 @@ class EntityController
         return new JsonResponse($this->service->delete($id));
     }
 
-    public function getDataFromRequest(Request $request, $addId = false)
+    public function getDataFromRequest($request, $addId = false)
     {
         return $this->getDataFromArray($request->request->all(), $addId);
     }

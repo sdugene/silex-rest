@@ -47,18 +47,20 @@ class EntityService
         }
     }
     
-    public function search($criteria)
+    public function search($criteria, $maxLine = false, $order = false, $group = false)
     {
         if (!empty($criteria)) {
-            $sql = "SELECT * FROM ".$this->route['tableName']." WHERE ".$this->prepareSql($criteria);
+            $sql = "SELECT * FROM ".$this->route['tableName']." WHERE ".$this->prepareSql($criteria).
+                $this->group($group).$this->order($order).$this->limit($maxLine);
             return $this->db->fetchAll($sql, $this->array_values_recursive($criteria));
         }
     }
 
-    public function searchWithJoin($criteria, $join = null)
+    public function searchWithJoin($criteria, $join = null, $maxLine = false, $order = false, $group = false)
     {
         if (!empty($criteria)) {
-            $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->prepareSql($criteria);
+            $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->prepareSql($criteria).
+                $this->group($group).$this->order($order).$this->limit($maxLine);
             return $this->fetchJoined($this->db->fetchAll($sql, array_values_recursive($criteria)), $join);
         }
     }
@@ -82,9 +84,9 @@ class EntityService
         $keys = array_keys($criteria);
         foreach($keys as &$key) {
             if (is_array($criteria[$key])) {
-                $key = $this->route['tableName'] . '.' . key($criteria[$key]). ' ' . $key . ' ?';
+                $key = '`'.$this->route['tableName'].'`' . '.' . key($criteria[$key]). ' ' . '`'.$key.'`' . ' ?';
             } else {
-                $key = $this->route['tableName'] . '.' . $key . ' = ?';
+                $key = '`'.$this->route['tableName'].'`' . '.' . '`'.$key.'`' . ' = ?';
             }
         }
         return implode(' AND ',$keys);
@@ -170,6 +172,31 @@ class EntityService
         return $arrayNew;
     }
 
+    private function group($group)
+    {
+        $groupQuery = '';
+        if ($group != false) {
+            $groupList = '';
+            foreach($group as $key => $value) {
+                if ($groupList !== '') {
+                    $groupList .= ', ';
+                }
+                $groupList .= '`'.$this->route['tableName'] .'`'.'.'.'`'. $key.'`'.' '.strtoupper($value);
+            }
+            $groupQuery = ' GROUP BY '.trim($groupList);
+        }
+        return $groupQuery;
+    }
+
+    private function limit($maxLine)
+    {
+        $limit = '' ;
+        if($maxLine != false && is_numeric($maxLine)){
+            $limit = " LIMIT " . $maxLine ;
+        }
+        return $limit;
+    }
+
     private function mergeResults($array, $join = null)
     {
         if (is_numeric(key($array))) {
@@ -191,5 +218,21 @@ class EntityService
             }
         }
         return $array;
+    }
+
+    private function order($order)
+    {
+        $orderQuery = '';
+        if ($order != false) {
+            $orderList = '';
+            foreach($order as $key => $value) {
+                if ($orderList !== '') {
+                    $orderList .= ', ';
+                }
+                $orderList .= '`'.$this->route['tableName'] .'`'.'.'.'`'. $key.'`'.' '.strtoupper($value);
+            }
+            $orderQuery = ' ORDER BY '.trim($orderList);
+        }
+        return $orderQuery;
     }
 }
