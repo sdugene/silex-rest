@@ -57,7 +57,7 @@ class EntityController
         return new JsonResponse($this->service->search($criteria, $maxLine, $order, $group));
     }
 
-    public function searchWithJoin(Request $request, $join)
+    public function searchWithJoin(Request $request, $join, $maxLine = false, $order = false, $group = false)
     {
         if (!is_null($request->get('criteria'))) {
             $criteria = $this->getDataFromArray($request->get('criteria'), true);
