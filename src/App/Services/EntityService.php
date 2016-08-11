@@ -64,7 +64,7 @@ class EntityService
         if (!empty($criteria)) {
             $sql = "SELECT ".$this->preprareColumns($join)." FROM ".$this->route['tableName']." ".$this->prepareJoin($join)." WHERE ".$this->prepareSql($criteria).
                 $this->group($group).$this->order($order).$this->limit($maxLine);
-            return $this->fetchJoined($this->db->fetchAll($sql, array_values_recursive($criteria)), $join);
+            return $this->fetchJoined($this->db->fetchAll($sql, $this->array_values_recursive($criteria)), $join);
         }
     }
 
